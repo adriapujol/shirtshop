@@ -1,0 +1,150 @@
+body {
+    font-family: 'B612', sans-serif;
+    margin: 0;
+    padding: 0;    
+}
+.content {
+    /* position: relative; */
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100vh;
+}
+
+header {
+    display: flex;
+    justify-content: center;
+    height: 10vh;
+    width: 100%;
+    /* color: #DEA945; */
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: auto;
+}
+
+.products {
+    flex: 4;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.product {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 300px;
+    height: auto;
+    margin: 30px;
+
+}
+
+.product img {
+    display: block;
+    max-width: 300px;
+    max-height: auto;
+}
+
+.item-info {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 5px;
+
+}
+
+button {
+    background-color: #DEA945;
+    border: none;
+    padding: 5px;
+    color: white;
+
+}
+
+button:hover {
+    background-color: #BD8622;
+    cursor: pointer;
+}
+
+
+.cart {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-top: 3px solid #fdcb6e;
+}
+
+.cart h3 {
+    color: #DEA945;
+}
+
+.cart-item {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    max-width: 500px;
+    width: 50%;
+    margin: 10px 0px;
+}
+
+.cart-item > * {
+    margin: 0px 5px;
+}
+
+.cart-item > img {
+    height: 50px;
+    border-radius: 50%;
+}
+
+.cart-quantity-input {
+    width: 50px;
+    height: 30px;
+    text-align: center;
+    border: 1px solid #eee;
+    /* justify-self: flex-end; */
+}
+
+.cart-quantity-input:focus {
+    outline: 1px solid #FCCB6F;
+    /* border: 1px solid #DEA943; */
+}
+
+.cart-price::after {
+    content: " €";
+}
+
+.btn-remove-cart {
+    background-color: #FF694A ;
+    border-radius: 12px;
+    padding: 5px 7px;
+
+}
+
+.btn-remove-cart:hover {
+    background-color: #F14420 ;
+}
+
+footer span {
+    float: right;
+}
+/* 
+footer {
+    position: relative;
+    height: 20px;
+    width: 100%;
+    margin-top: 5px;
+    bottom: 0px;
+} */
+
+/* footer {
+    position: absolute;
+    bottom: 2px;
+    right: 5px;
+} */
