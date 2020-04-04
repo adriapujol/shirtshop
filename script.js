@@ -1,4 +1,7 @@
 
+
+
+
 window.onload = function ready() {
   
     product_0 = new Product("0", "Dreadful", 12.99);
@@ -12,10 +15,10 @@ window.onload = function ready() {
 
     renderProduct(products, container);
 
-    let btnAdd_0 = document.getElementById("btn-add-0");
-    let btnAdd_1 = document.getElementById("btn-add-1");
-    let btnAdd_2 = document.getElementById("btn-add-2");
-    let btnAdd_3 = document.getElementById("btn-add-3");
+    const btnAdd_0 = document.getElementById("btn-add-0"),
+          btnAdd_1 = document.getElementById("btn-add-1"),
+          btnAdd_2 = document.getElementById("btn-add-2"),
+          btnAdd_3 = document.getElementById("btn-add-3");
 
 
     console.log(cart);
