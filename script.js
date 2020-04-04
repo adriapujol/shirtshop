@@ -1,10 +1,10 @@
 
 window.onload = function ready() {
   
-    product_0 = new Product("0", "White t-shirt 0", 12.99);
-    product_1 = new Product("1", "White t-shirt 1", 13.99);
-    product_2 = new Product("2", "White t-shirt 2", 15.99);
-    product_3 = new Product("3", "White t-shirt 3", 18.99);
+    product_0 = new Product("0", "Dreadful", 12.99);
+    product_1 = new Product("1", "Cat face", 13.99);
+    product_2 = new Product("2", "Sr. Batman", 15.99);
+    product_3 = new Product("3", "Black Mamba", 18.99);
     const products = [product_0, product_1, product_2, product_3],
           cart = [],
           container = document.getElementById("products"),
@@ -55,6 +55,12 @@ const addCart = (cart, item) => {
     console.log(cart);
 };
 
+const removeCart = (cart, item) => {
+    
+
+
+}
+
 const renderProduct = (list, container) => {
     for (item of list) {
         container.innerHTML += `<div class="product">
@@ -73,9 +79,11 @@ const renderCart = (prod, cart) => {
     cart.innerHTML += `<div class="cart-item" id="item-${prod.id}">
                             <img src="img/shirt_s_${prod.id}.jpg" class="cart-img" alt="item cart">
                             <span>${prod.name}</span>
-                            <input class="cart-quantity-input" type="number" min="0" max="20" value="0">
+                            <input class="cart-quantity-input" type="number" min="1" max="20" value="1">
                             <span class="cart-price">${prod.price}</span>
-                            <button class="btn-remove-cart">X</button>
+                            <button class="btn-remove-cart" id="btn-remove-${item.id}">X</button>
                         </div>`
                         ;
 };    
+
+
