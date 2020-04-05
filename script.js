@@ -13,19 +13,37 @@ const shopController = (() => {
     product_2 = new Product("2", "Sr. Batman", 15.99);
     product_3 = new Product("3", "Black Mamba", 18.99);
 
-    const products = [product_0, product_1, product_2, product_3],
-          cart = [];
+    // const products = [product_0, product_1, product_2, product_3],
+    //       cart = [];
+
+    const data = {
+        products: [product_0, product_1, product_2, product_3],
+        cart: [],
+        total: 0
+    }          
     
           
     return {
-        getProducts: () => products,
-         
-        getCart: () => cart,
 
-        addCart: () => (cart, item) => {
-                cart.push(item);
-                console.log(cart);
+        towDec:  (x) => Number.parseFloat(x).toFixed(2),
+
+        getData: () => data,
+        // getProducts: () => products,
+         
+        // getCart: () => cart,
+
+        addCart: (data, id) => {
+                data.cart.push(data.products[id]);
+                data.total += data.products[id].price;
+                console.log(data.cart);
+            },
+        
+        removeCart: (cart, prod) => {
+            const index = cart.indexOf(prod);
+            if (index > -1) {
+                cart.splice(index, 1);
             }
+        }
         
     };
 
@@ -93,47 +111,58 @@ const controller = ((shopCtrl, UICtrl) => {
 
     const DOM = UICtrl.getDOMstrings();
     const elHTML = UICtrl.getHTML();
-    const prods = shopCtrl.getProducts();
-    const cart = shopCtrl.getCart();
-
-
-
-    UICtrl.renderProducts(prods, elHTML.container);
+    // const prods = shopCtrl.getProducts();
+    // const cart = shopCtrl.getCart();
+    const data = shopCtrl.getData();
+   
 
     const setupeEventListeners = () => {
 
+        UICtrl.renderProducts(data.products, elHTML.container);
+
         document.getElementById(DOM.btnAdd_0).addEventListener('click', ()=>{
-            shopCtrl.addCart(cart, prods[0]);
-            UICtrl.renderCart(prods[0], elHTML.cartHTML);
+            shopCtrl.addCart(data, 0);
+            UICtrl.renderCart(data.products[0], elHTML.cartHTML);
+            console.log(data.total);
         });
         document.getElementById(DOM.btnAdd_1).addEventListener('click', ()=>{
-            shopCtrl.addCart(cart, prods[1]);
-            UICtrl.renderCart(prods[1], elHTML.cartHTML);
+            shopCtrl.addCart(data, 1);
+            UICtrl.renderCart(data.products[1], elHTML.cartHTML);
+            console.log(data.total);
         });
         document.getElementById(DOM.btnAdd_2).addEventListener('click', ()=>{
-            shopCtrl.addCart(cart, prods[2]);
-            UICtrl.renderCart(prods[2], elHTML.cartHTML);
+            shopCtrl.addCart(data, 2);
+            UICtrl.renderCart(data.products[2], elHTML.cartHTML);
+            console.log(data.total);
         });
         document.getElementById(DOM.btnAdd_3).addEventListener('click', ()=>{
-            shopCtrl.addCart(cart, prods[3]);
-            UICtrl.renderCart(prods[3], elHTML.cartHTML);
+            shopCtrl.addCart(data, 3);
+            UICtrl.renderCart(data.products[3], elHTML.cartHTML);
+            console.log(data.total);
+            
         });
 
-
-        // for (i of prods) {
-        //     document.getElementById(DOM.btn).addEventListener('click', ()=>{
-        //         shopCtrl.addCart(cart, i);
-        //         UICtrl.renderCart(i, elHTML.cartHTML);
-        //     });
-        // }
     };
-    setupeEventListeners();
-    console.log(shopCtrl.getProducts());
-    console.log(shopCtrl.getCart());
+
+    console.log(data);
+
+    return {
+        init: function() {
+            console.log("Application has started.");
+            setupeEventListeners();
+        },
+
+        test: () => {
+            console.log(shopCtrl.getCart());
+        }
+    }
+    // setupeEventListeners();
+
 
 
 })(shopController, UIController);
 
+controller.init();
 
 // window.onload = function ready() {
   
