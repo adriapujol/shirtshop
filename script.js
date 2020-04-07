@@ -1,17 +1,19 @@
+//SHOP CONTROLLER
 const shopController = (() => {
 
     class Product {
-        constructor(id, name, price) {
+        constructor(id, name, price, quantity) {
             this.id = id;
             this.name = name;
             this.price = price;
+            this.quantity = quantity;
         }
     }
 
-    product_0 = new Product("0", "Dreadful", 12.99);
-    product_1 = new Product("1", "Cat face", 13.99);
-    product_2 = new Product("2", "Sr. Batman", 15.99);
-    product_3 = new Product("3", "Black Mamba", 18.99);
+    product_0 = new Product("0", "Dreadful", 12.99, 1);
+    product_1 = new Product("1", "Cat face", 13.99, 1);
+    product_2 = new Product("2", "Sr. Batman", 15.99, 1);
+    product_3 = new Product("3", "Black Mamba", 18.99, 1);
 
     // const products = [product_0, product_1, product_2, product_3],
     //       cart = [];
@@ -33,9 +35,25 @@ const shopController = (() => {
         // getCart: () => cart,
 
         addCart: (data, id) => {
-                data.cart.push(data.products[id]);
-                data.total += data.products[id].price;
-                console.log(data.cart);
+            data.cart.push(data.products[id]);
+            data.total += data.products[id].price;
+            console.log(data.cart);
+            // if (data.cart.indexOf(data.products[id]) > -1) {
+            //     console.log('WORKS', data.cart.indexOf(data.products[id]));
+            //     data.cart[0].quantity += 1;
+            //     console.log(data.cart[0].quantity);
+            // } else {
+            //     data.cart.push(data.products[id]);
+            //     data.total += data.products[id].price;
+            //     console.log(data.cart);
+
+            
+                // if (data.cart.indexOf(data.products[id])) {
+                //     data.cart[id].quantity += 1;
+                //     console.log(data.cart);
+                // } else {
+                // }
+
             },
         
         removeCart: (cart, prod) => {
@@ -49,7 +67,7 @@ const shopController = (() => {
 
 })();
 
-
+//UI CONTROLLER
 const UIController = (() => {
 
     const DOMstrings = {
@@ -62,10 +80,10 @@ const UIController = (() => {
 
     }
 
-    const elementsHTML = {
-        container: document.getElementById(DOMstrings.products),
-        cartHTML: document.getElementById(DOMstrings.cart)  
-    }
+    // const elementsHTML = {
+    //     container: document.getElementById(DOMstrings.products),
+    //     cartHTML: document.getElementById(DOMstrings.cart)  
+    // }
     
     return {
 
@@ -83,20 +101,30 @@ const UIController = (() => {
             };
         },
 
-        renderCart: (prod, cart) => {
-            cart.innerHTML += `<div class="cart-item" id="item-${prod.id}">
-                                    <img src="img/shirt_s_${prod.id}.jpg" class="cart-img" alt="item cart">
-                                    <span>${prod.name}</span>
-                                    <input class="cart-quantity-input" type="number" min="1" max="20" value="1">
-                                    <span class="cart-price">${prod.price}</span>
-                                    <button class="btn-remove-cart" id="btn-remove-${item.id}">X</button>
+        // renderCart: (prod, cart) => {
+        //     cart.innerHTML += `<div class="cart-item" id="item-${prod.id}">
+        //                             <img src="img/shirt_s_${prod.id}.jpg" class="cart-img" alt="item cart">
+        //                             <span>${prod.name}</span>
+        //                             <input class="cart-quantity-input" id="quantity-${prod.id}" type="number" min="1" value="1">
+        //                             <span class="cart-price">${prod.price * prod.cart.quantity}</span>
+        //                             <button class="btn-remove-cart" id="btn-remove-${item.id}">X</button>
+        //                         </div>`
+        //                         ;
+        // },
+        renderCart: (d, ca, i) => {
+            ca.innerHTML += `<div class="cart-item" id="item-${d.products[i].id}">
+                                    <img src="img/shirt_s_${d.products[i].id}.jpg" class="cart-img" alt="item cart">
+                                    <span>${d.products[i].name}</span>
+                                    <input class="cart-quantity-input" id="quantity-${d.products[i].id}" type="number" min="1" value="${d.cart[d.cart.indexOf(d.products[i])].quantity}">
+                                    <span class="cart-price" id="cart-price-${d.products[i].id}">${d.products[i].price}</span>
+                                    <button class="btn-remove-cart" id="btn-remove-${d.products[i].id}">X</button>
                                 </div>`
                                 ;
         },
 
         getDOMstrings: () => DOMstrings,
 
-        getHTML: () => elementsHTML
+        // getHTML: () => elementsHTML
 
 
 
@@ -106,43 +134,66 @@ const UIController = (() => {
 
 })();
 
-
+//GLOBAL APP CONTROLLER
 const controller = ((shopCtrl, UICtrl) => {
 
-    const DOM = UICtrl.getDOMstrings();
-    const elHTML = UICtrl.getHTML();
+    const DOM = UICtrl.getDOMstrings(),
+          cart = document.getElementById(DOM.cart),
+          products = document.getElementById(DOM.products),
+        //   elHTML = UICtrl.getHTML(),
     // const prods = shopCtrl.getProducts();
     // const cart = shopCtrl.getCart();
-    const data = shopCtrl.getData();
+          data = shopCtrl.getData();
    
 
     const setupeEventListeners = () => {
 
-        UICtrl.renderProducts(data.products, elHTML.container);
+        UICtrl.renderProducts(data.products, products);
 
         document.getElementById(DOM.btnAdd_0).addEventListener('click', ()=>{
-            shopCtrl.addCart(data, 0);
-            UICtrl.renderCart(data.products[0], elHTML.cartHTML);
-            console.log(data.total);
+            addItemCart(data, cart, 0);
         });
         document.getElementById(DOM.btnAdd_1).addEventListener('click', ()=>{
-            shopCtrl.addCart(data, 1);
-            UICtrl.renderCart(data.products[1], elHTML.cartHTML);
-            console.log(data.total);
+            addItemCart(data, cart, 1);
         });
         document.getElementById(DOM.btnAdd_2).addEventListener('click', ()=>{
-            shopCtrl.addCart(data, 2);
-            UICtrl.renderCart(data.products[2], elHTML.cartHTML);
-            console.log(data.total);
+            addItemCart(data, cart, 2);
         });
         document.getElementById(DOM.btnAdd_3).addEventListener('click', ()=>{
-            shopCtrl.addCart(data, 3);
-            UICtrl.renderCart(data.products[3], elHTML.cartHTML);
-            console.log(data.total);
-            
+            addItemCart(data, cart, 3); 
         });
 
+
+
     };
+
+    // Add item to cart
+
+    const addItemCart = (d, c, id) => {
+        // shopCtrl.addCart(d, id);
+        // UICtrl.renderCart(d.products[id], c);
+        // console.log(d.total);
+
+        if (d.cart.indexOf(d.products[id]) > -1) {
+            const cartID = d.cart.indexOf(d.products[id]);
+            console.log('WORKS', d.cart.indexOf(d.products[id]));
+            d.cart[cartID].quantity += 1;
+            console.log(d.cart[cartID].quantity);
+            document.getElementById(`quantity-${id}`).value = d.cart[cartID].quantity;
+            document.getElementById(`cart-price-${id}`).innerHTML = d.cart[cartID].price * d.cart[cartID].quantity;
+            
+        } else {
+            shopCtrl.addCart(d, id);
+            UICtrl.renderCart(d, c, id);
+            console.log(d.total);
+        }
+    };    
+
+    // Delete item from cart
+
+    const delItemCart = (c, p) => {
+        shopCtrl.removeCart(c, p);
+    }
 
     console.log(data);
 
