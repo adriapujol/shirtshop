@@ -138,7 +138,7 @@ const controller = ((shopCtrl, UICtrl) => {
     const DOM = UICtrl.getDOMstrings(),
           cart = document.getElementById(DOM.cartContainer),
           products = document.getElementById(DOM.products),
-          total = document.getElementsByClassName(DOM.total),
+        //   total = document.getElementsByClassName(DOM.total),
           data = shopCtrl.getData();
    
     //Setting up event listeners
@@ -172,8 +172,8 @@ const controller = ((shopCtrl, UICtrl) => {
 
     const addItemCart = (d, c, id) => {
             shopCtrl.addCart(d, id);
-            UICtrl.renderCart(d, c, id);
             shopCtrl.addTotal(d);
+            UICtrl.renderCart(d, c);
             UICtrl.renderTotal(d);
       
     };    
@@ -184,17 +184,22 @@ const controller = ((shopCtrl, UICtrl) => {
                   splitID = itemID.split('-'),
                   numID = splitID[1],
                   targetID = event.target.id;
-                  console.log(targetID);
-            console.log(numID);
-            console.log(event.target.parentNode);
-            console.log(itemID);
+            console.log("Event Target ID: ", targetID);
+            console.log("ID after splitting", numID);
+            console.log("Event target Parent Node: ", event.target.parentNode);
+            console.log("Event Target Parent Node ID: ", itemID);
             
-            if (itemID && targetID===`btn-remove-${numID}`) {
+            if (itemID) {
                     // 1. Remove item from data cart
                     shopCtrl.removeCart(data.cart, data.products[numID]);
+                    shopCtrl.addTotal(data);
+                    UICtrl.renderCart(data, cart);
+                    UICtrl.renderTotal(data);
+                    
                     console.log(data.cart);
                     // // 2. Remove item from UI
-                    UICtrl.deleteCartItem(itemID);
+                    // UICtrl.deleteCartItem(itemID);
+
 
 
             }
