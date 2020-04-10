@@ -10,6 +10,8 @@ const shopController = (() => {
         }
     }
 
+    Product.prototype.prodTotal = () => this.quantity * this.price;
+
     product_0 = new Product("0", "Dreadful", 12.99, 1);
     product_1 = new Product("1", "Cat face", 13.99, 1);
     product_2 = new Product("2", "Sr. Batman", 15.99, 1);
@@ -35,26 +37,24 @@ const shopController = (() => {
         // getCart: () => cart,
 
         addCart: (data, id) => {
-            data.cart.push(data.products[id]);
+            const cartID = data.cart.indexOf(data.products[id]);
+            //Check if the product already exist in the cart
+            if (cartID > -1) {
+                console.log('WORKS', cartID);
+                // 1. Update quantity of product in the cart
+                data.cart[cartID].quantity += 1;
+                console.log(data.cart[cartID].quantity);
+                
+            } else {               
+                // 1. Add item to cart
+                data.cart.push(data.products[id]);
+                console.log('new product added: ', data.cart);
+            }
+            // 2. Add to total
             data.total += data.products[id].price;
-            console.log(data.cart);
-            // if (data.cart.indexOf(data.products[id]) > -1) {
-            //     console.log('WORKS', data.cart.indexOf(data.products[id]));
-            //     data.cart[0].quantity += 1;
-            //     console.log(data.cart[0].quantity);
-            // } else {
-            //     data.cart.push(data.products[id]);
-            //     data.total += data.products[id].price;
-            //     console.log(data.cart);
-
-            
-                // if (data.cart.indexOf(data.products[id])) {
-                //     data.cart[id].quantity += 1;
-                //     console.log(data.cart);
-                // } else {
-                // }
-
-            },
+            console.log("total with new product added: ", data.total);
+        
+    },
         
         removeCart: (cart, prod) => {
             const index = cart.indexOf(prod);
@@ -73,6 +73,7 @@ const UIController = (() => {
     const DOMstrings = {
         products: 'products',
         cart: 'cart',
+        total: 'total',
         btnAdd_0: 'btn-add-0',
         btnAdd_1: 'btn-add-1',
         btnAdd_2: 'btn-add-2',
@@ -116,15 +117,21 @@ const UIController = (() => {
                                     <img src="img/shirt_s_${d.products[i].id}.jpg" class="cart-img" alt="item cart">
                                     <span>${d.products[i].name}</span>
                                     <input class="cart-quantity-input" id="quantity-${d.products[i].id}" name="quantity-${d.products[i].id}" type="number" min="1" value="${d.cart[d.cart.indexOf(d.products[i])].quantity}">
-                                    <span class="cart-price" id="cart-price-${d.products[i].id}">${d.products[i].price}</span>
+                                    <span class="cart-price" id="cart-price-${d.products[i].id}">${d.products[i].price * d.cart[d.cart.indexOf(d.products[i])].quantity}</span>
                                     <button class="btn-remove-cart" id="btn-remove-${d.products[i].id}">X</button>
                                 </div>`
                                 ;
         },
         
         deleteCartItem: (selectorID) => {
+            console.log("SelectorID: ", selectorID);
             const el = document.getElementById(selectorID);
             el.parentNode.removeChild(el);
+        },
+
+        renderTotal: (d) => {
+            total.innerHTML = `${d.total}`;
+
         },
 
         getDOMstrings: () => DOMstrings,
@@ -147,6 +154,7 @@ const controller = ((shopCtrl, UICtrl) => {
     const DOM = UICtrl.getDOMstrings(),
           cart = document.getElementById(DOM.cart),
           products = document.getElementById(DOM.products),
+          total = document.getElementsByClassName(DOM.total),
         //   elHTML = UICtrl.getHTML(),
     // const prods = shopCtrl.getProducts();
     // const cart = shopCtrl.getCart();
@@ -182,40 +190,62 @@ const controller = ((shopCtrl, UICtrl) => {
     // Add item to cart
 
     const addItemCart = (d, c, id) => {
-        // shopCtrl.addCart(d, id);
+        
+        // const itemID = `item-${id}`;
+
+
+        // }
+        const cartID = d.cart.indexOf(d.products[id]);
+        console.log("FUUUCK CARTID", cartID);
+        const itemID = `item-${cartID}`;
+        console.log("ITEM ID DAMMIT ", itemID);
+        if (cartID > -1) {
+            shopCtrl.addCart(d, id);
+            UICtrl.deleteCartItem(itemID);
+            UICtrl.renderCart(d, c, id);
+        } else {
+            shopCtrl.addCart(d, id);
+            UICtrl.renderCart(d, c, id);
+        }
+        UICtrl.renderTotal(d);
+
+        
+
+
         // UICtrl.renderCart(d.products[id], c);
         // console.log(d.total);
 
-        //Check if item is already in the cart
+        // //Check if item is already in the cart
+        // const cartID = d.cart.indexOf(d.products[id]);
+        // shopCtrl.addCart(d, id);
+        // if (cartID > -1) {
+        //     console.log('WORKS', cartID);
+        //     // 1. Update quantity of product in the cart
+        //     // d.cart[cartID].quantity += 1;
+        //     // console.log(d.cart[cartID].quantity);
+        //     // 2. Display and update value of input
+        //     document.getElementById(`quantity-${id}`).value = d.cart[cartID].quantity;
+        //     // 3. Update the price of the item in the cart depending on the quantity of items added
+        //     document.getElementById(`cart-price-${id}`).innerHTML = d.cart[cartID].price * d.cart[cartID].quantity;
+        //     console.log('is this working?',document.getElementById(`quantity-${id}`).value);
+        //     // UICtrl.renderCart(d, c, id);
 
-        if (d.cart.indexOf(d.products[id]) > -1) {
-            const cartID = d.cart.indexOf(d.products[id]);
-            console.log('WORKS', d.cart.indexOf(d.products[id]));
-            // 1. Update quantity of product in the cart
-            d.cart[cartID].quantity += 1;
-            console.log(d.cart[cartID].quantity);
-            // 2. Display and update value of input
-            document.getElementById(`quantity-${id}`).value = d.cart[cartID].quantity;
-            // 3. Update the price of the item in the cart depending on the quantity of items added
-            document.getElementById(`cart-price-${id}`).innerHTML = d.cart[cartID].price * d.cart[cartID].quantity;
-            console.log('is this working?',document.getElementById(`quantity-${id}`).value);
-            // 4. Add to total
-
-            // 5. Update total UI
+        //     // 4. Add to total
             
-        } else {
+        //     // 5. Update total UI
+            
+        // } else {
+        //     // 1. Add item to cart
+        //     // shopCtrl.addCart(d, id);
 
-            // 1. Add item to cart
-            shopCtrl.addCart(d, id);
-
-            // 2. Update Cart UI
-            UICtrl.renderCart(d, c, id);
-            console.log(d.total);
+        //     // 2. Update Cart UI
+        //     UICtrl.renderCart(d, c, id);
+        //     console.log(d.total);
 
             // 4. Add to total
 
             // 5. Update total UI
-        }
+        // }
     };    
 
     // Delete item from cart
