@@ -72,6 +72,9 @@ button:hover {
     cursor: pointer;
 }
 
+.price::after {
+    content: ' €';
+}
 
 .cart {
     flex: 2;
@@ -81,8 +84,18 @@ button:hover {
     border-top: 3px solid #fdcb6e;
 }
 
+
 .cart h3 {
     color: #DEA945;
+}
+
+.cart-info {
+    display: flex;
+    align-items: center;
+}
+
+.cart-info > * {
+    margin: 0px 20px;
 }
 
 #total::after {
@@ -140,6 +153,10 @@ button:hover {
 
 .btn-remove-cart:hover {
     background-color: #F14420 ;
+}
+
+.disc-container {
+    margin: 20px 0px;
 }
 
 footer span {

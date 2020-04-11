@@ -22,6 +22,8 @@ const shopController = (() => {
     const data = {
         products: [product_0, product_1, product_2, product_3],
         cart: [],
+        discount: 'cheap20',
+        disQuant: 0.2,
         total: 0
     }          
     
@@ -55,6 +57,26 @@ const shopController = (() => {
             console.log(data.total);
         },
 
+        addDiscount: (data) => {
+            data.total = Math.round(data.total * (1- data.disQuant) * 100)/100;
+            console.log('discount total', data.total);
+        },
+
+        countQuantityCart: (data) => {            
+
+                let count = 0;
+                for (item of data.cart) {
+                    count += item.quantity;
+                }
+                return count;
+
+            
+        },
+
+        clearCart: (d)=> {
+            data.cart = [];
+        },
+
         
         removeCart: (cart, prod) => {
             const index = cart.indexOf(prod);
@@ -75,6 +97,9 @@ const UIController = (() => {
         cart: 'cart',
         cartContainer: 'cart-container',
         total: 'total',
+        inputDisc: 'discount',
+        btnBuy: 'btn-buy',
+        btnDisc: 'btn-disc',
         btnAdd_0: 'btn-add-0',
         btnAdd_1: 'btn-add-1',
         btnAdd_2: 'btn-add-2',
@@ -105,7 +130,7 @@ const UIController = (() => {
                                     <span>${d.cart[i].name}</span>
                                     <input class="cart-quantity-input" id="quantity-${d.cart[i].id}" name="quantity-${d.cart[i].id}" type="number" min="1" value="${d.cart[i].quantity}">
                                     <span class="cart-price" id="cart-price-${d.cart[i].id}">${Math.round(d.cart[i].prodTotal()*100)/100}</span>
-                                    <button class="btn-remove-cart" id="btn-remove-${d.products[i].id}">X</button>
+                                    <button class="btn-remove-cart" id="btn-remove-${d.cart[i].id}">X</button>
                                 </div>`;
 
             }
@@ -116,6 +141,8 @@ const UIController = (() => {
             const el = document.getElementById(selectorID);
             el.parentNode.removeChild(el);
         },
+
+
 
         renderTotal: (d) => {
             total.innerHTML = `${d.total}`;
@@ -138,9 +165,8 @@ const controller = ((shopCtrl, UICtrl) => {
     const DOM = UICtrl.getDOMstrings(),
           cart = document.getElementById(DOM.cartContainer),
           products = document.getElementById(DOM.products),
-        //   total = document.getElementsByClassName(DOM.total),
           data = shopCtrl.getData();
-   
+          
     //Setting up event listeners
 
     const setupeEventListeners = () => {
@@ -164,7 +190,13 @@ const controller = ((shopCtrl, UICtrl) => {
             addItemCart(data, cart, 3); 
         });
 
-          cart.addEventListener('click', delItemCart);
+        cart.addEventListener('change', addQuantity);
+        cart.addEventListener('click', delItemCart);
+        document.getElementById(DOM.btnBuy).addEventListener('click', ()=> buy(data, cart));
+        document.getElementById(DOM.btnDisc).addEventListener('click', discApply);
+          
+
+
 
     };
 
@@ -175,36 +207,88 @@ const controller = ((shopCtrl, UICtrl) => {
             shopCtrl.addTotal(d);
             UICtrl.renderCart(d, c);
             UICtrl.renderTotal(d);
-      
+     
     };    
 
     // Delete item from cart
-        const delItemCart = (event) => {
-            const itemID = event.target.parentNode.id,
-                  splitID = itemID.split('-'),
-                  numID = splitID[1],
-                  targetID = event.target.id;
-            console.log("Event Target ID: ", targetID);
-            console.log("ID after splitting", numID);
-            console.log("Event target Parent Node: ", event.target.parentNode);
-            console.log("Event Target Parent Node ID: ", itemID);
-            
-            if (itemID) {
-                    // 1. Remove item from data cart
-                    shopCtrl.removeCart(data.cart, data.products[numID]);
-                    shopCtrl.addTotal(data);
-                    UICtrl.renderCart(data, cart);
-                    UICtrl.renderTotal(data);
-                    
-                    console.log(data.cart);
-                    // // 2. Remove item from UI
-                    // UICtrl.deleteCartItem(itemID);
+    const delItemCart = (event) => {
+        // const itemID = event.target.parentNode.id,
+        const targetID = event.target.id,
+                splitID = targetID.split('-'),
+                numID = splitID[2];
+        console.log("Event Target ID: ", targetID);
+        console.log("ID after splitting", numID);
+        console.log("Event target Parent Node: ", event.target.parentNode);
+        // console.log("Event Target Parent Node ID: ", itemID);
+        
+        if (targetID === `btn-remove-${numID}`) {
+                // 1. Remove item from data cart
+                data.cart[data.cart.indexOf(data.products[numID])].quantity = 1;    ;
+                shopCtrl.removeCart(data.cart, data.products[numID]);
+                shopCtrl.addTotal(data);
+                UICtrl.renderCart(data, cart);
+                UICtrl.renderTotal(data);
+                
+                console.log(data.cart);
+                
+                // // 2. Remove item from UI
+                // UICtrl.deleteCartItem(itemID);
 
 
 
-            }
+        } else {
+            console.log("YOU MISSED THE REMOVE BUTTON");
         };
 
+        
+    };
+
+        // Change quantity with input arrows and typing
+
+    const addQuantity = (event) => {
+        const input = event.target,
+                inputID = input.id.split('-')[1],
+                cartID = data.cart.indexOf(data.products[inputID]);
+
+        console.log(`input listener with ID ${inputID} and content: __>  ${input}`);
+        console.log('HTML input addquantity: ', input);
+        if (isNaN(input.value) || input.value < 1) {
+            input.value = 1;
+        } else {
+            data.cart[cartID].quantity = parseInt(input.value);
+            console.log('cart after changing input', data.cart);
+            shopCtrl.addTotal(data);
+            UICtrl.renderCart(data, cart);
+            UICtrl.renderTotal(data);
+        }
+
+    };
+
+    const buy = (d, c) => {
+        if (d.cart.length < 1) {
+            alert('Your cart is empty!');
+        } else {
+            let count = shopCtrl.countQuantityCart(d);
+            alert(`Congratulations, you've purchased ${count} products for ${d.total}€!`);
+            shopCtrl.clearCart(d);
+            UICtrl.renderCart(d, c);
+            shopCtrl.addTotal(d);
+            UICtrl.renderTotal(d);
+        }
+    };
+
+    const discApply = () => {
+        let discInp = document.getElementById(DOM.inputDisc).value;
+        if (discInp === data.discount) {
+            shopCtrl.addDiscount(data);
+            UICtrl.renderTotal(data);
+            alert("Discount applied!");
+        } else {
+           alert("This code doesn\'t exist");
+        }
+        document.getElementById(DOM.inputDisc).value = '';
+    }
+    
 
     console.log(data);
 
