@@ -138,6 +138,7 @@ const controller = ((shopCtrl, UICtrl) => {
     const DOM = UICtrl.getDOMstrings(),
           cart = document.getElementById(DOM.cartContainer),
           products = document.getElementById(DOM.products),
+          quantityInputs = document.getElementsByClassName('cart-quantity-input'),
         //   total = document.getElementsByClassName(DOM.total),
           data = shopCtrl.getData();
    
@@ -164,7 +165,11 @@ const controller = ((shopCtrl, UICtrl) => {
             addItemCart(data, cart, 3); 
         });
 
-          cart.addEventListener('click', delItemCart);
+        cart.addEventListener('change', addQuantity);
+        cart.addEventListener('click', delItemCart);
+          
+
+
 
     };
 
@@ -175,7 +180,7 @@ const controller = ((shopCtrl, UICtrl) => {
             shopCtrl.addTotal(d);
             UICtrl.renderCart(d, c);
             UICtrl.renderTotal(d);
-      
+     
     };    
 
     // Delete item from cart
@@ -206,9 +211,29 @@ const controller = ((shopCtrl, UICtrl) => {
 
             } else {
                 console.log("YOU MISSED THE REMOVE BUTTON");
-            }
-        };
+            };
 
+            
+        };
+                const addQuantity = (event) => {
+                    const input = event.target,
+                          inputID = input.id.split('-')[1],
+                          cartID = data.cart.indexOf(data.products[inputID]);
+
+                    console.log(`input listener with ID ${inputID} and content: __>  ${input}`);
+                    console.log('HTML input addquantity: ', input);
+                    if (isNaN(input.value) || input.value < 1) {
+                        input.value = 1;
+                    } else {
+                        data.cart[cartID].quantity = parseInt(input.value);
+                        console.log('cart after changing input', data.cart);
+                        shopCtrl.addTotal(data);
+                        UICtrl.renderCart(data, cart);
+                        UICtrl.renderTotal(data);
+                    }
+
+                };
+    
 
     console.log(data);
 
