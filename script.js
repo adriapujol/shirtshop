@@ -105,7 +105,7 @@ const UIController = (() => {
                                     <span>${d.cart[i].name}</span>
                                     <input class="cart-quantity-input" id="quantity-${d.cart[i].id}" name="quantity-${d.cart[i].id}" type="number" min="1" value="${d.cart[i].quantity}">
                                     <span class="cart-price" id="cart-price-${d.cart[i].id}">${Math.round(d.cart[i].prodTotal()*100)/100}</span>
-                                    <button class="btn-remove-cart" id="btn-remove-${d.products[i].id}">X</button>
+                                    <button class="btn-remove-cart" id="btn-remove-${d.cart[i].id}">X</button>
                                 </div>`;
 
             }
@@ -180,28 +180,32 @@ const controller = ((shopCtrl, UICtrl) => {
 
     // Delete item from cart
         const delItemCart = (event) => {
-            const itemID = event.target.parentNode.id,
-                  splitID = itemID.split('-'),
-                  numID = splitID[1],
-                  targetID = event.target.id;
+            // const itemID = event.target.parentNode.id,
+            const targetID = event.target.id,
+                  splitID = targetID.split('-'),
+                  numID = splitID[2];
             console.log("Event Target ID: ", targetID);
             console.log("ID after splitting", numID);
             console.log("Event target Parent Node: ", event.target.parentNode);
-            console.log("Event Target Parent Node ID: ", itemID);
+            // console.log("Event Target Parent Node ID: ", itemID);
             
-            if (itemID) {
+            if (targetID === `btn-remove-${numID}`) {
                     // 1. Remove item from data cart
+                    data.cart[data.cart.indexOf(data.products[numID])].quantity = 1;    ;
                     shopCtrl.removeCart(data.cart, data.products[numID]);
                     shopCtrl.addTotal(data);
                     UICtrl.renderCart(data, cart);
                     UICtrl.renderTotal(data);
                     
                     console.log(data.cart);
+                    
                     // // 2. Remove item from UI
                     // UICtrl.deleteCartItem(itemID);
 
 
 
+            } else {
+                console.log("YOU MISSED THE REMOVE BUTTON");
             }
         };
 

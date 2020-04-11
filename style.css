@@ -72,6 +72,9 @@ button:hover {
     cursor: pointer;
 }
 
+.price::after {
+    content: ' €';
+}
 
 .cart {
     flex: 2;
