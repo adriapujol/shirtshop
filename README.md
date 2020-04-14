@@ -1,3 +1,3 @@
-# Shirt shop mock up
+# Shirt shop
 
-#Mimicking a shop with vanilla javascript
+Mimicking a shop with vanilla javascript
