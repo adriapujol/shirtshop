@@ -71,14 +71,14 @@ const shopController = (() => {
                 data.total += item.prodTotal();
             }
             data.total = Math.round(data.total*100)/100;
-            console.log(data.total);
+            // console.log(data.total);
         },
 
         // Apply the discount to the total value of the cart
 
         addDiscount: (data) => {
             data.total = Math.round(data.total * (1- data.disQuant) * 100)/100;
-            console.log('discount total', data.total);
+            // console.log('discount total', data.total);
         },
 
         // Count how many items are in the cart
@@ -256,9 +256,9 @@ const controller = ((shopCtrl, UICtrl) => {
         const targetID = event.target.id,
                 splitID = targetID.split('-'),
                 numID = splitID[2];
-        console.log("Event Target ID: ", targetID);
-        console.log("ID after splitting", numID);
-        console.log("Event target Parent Node: ", event.target.parentNode);
+        // console.log("Event Target ID: ", targetID);
+        // console.log("ID after splitting", numID);
+        // console.log("Event target Parent Node: ", event.target.parentNode);
         // console.log("Event Target Parent Node ID: ", itemID);
         
         if (targetID === `btn-remove-${numID}`) {
